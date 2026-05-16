@@ -10,10 +10,10 @@ interface PanelProps extends PropsWithChildren {
 export function Panel({ title, eyebrow, action, className = '', children }: PanelProps) {
   return (
     <section className={`panel-glow rounded-[30px] border border-white/8 p-5 shadow-panel ${className}`}>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           {eyebrow ? <div className="text-xs uppercase tracking-[0.28em] text-sky-200/70">{eyebrow}</div> : null}
-          <h3 className="mt-2 text-lg font-semibold text-white">{title}</h3>
+          <h3 className="mt-2 text-[1.1rem] font-semibold tracking-tight text-white">{title}</h3>
         </div>
         {action}
       </div>

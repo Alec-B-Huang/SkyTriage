@@ -16,46 +16,14 @@ const levelLabels: Record<DamageLevel, string> = {
   destroyed: 'Destroyed',
 };
 
-const createAerialMock = (label: string, mode: 'before' | 'after', level: DamageLevel) => {
-  const color = damagePalette[level];
-  const opacity = mode === 'before' ? 0.14 : 0.32;
-  const roofCracks =
-    mode === 'before'
-      ? '<path d="M80 188 L154 164 L228 188" stroke="#a6d3ff" stroke-width="4" opacity="0.15" />'
-      : `<path d="M76 182 L154 150 L228 182" stroke="${color}" stroke-width="5" opacity="0.68" />
-         <path d="M98 220 L146 200 L210 220" stroke="${color}" stroke-width="4" opacity="0.5" />`;
-
-  const debris =
-    mode === 'before'
-      ? ''
-      : `<circle cx="250" cy="238" r="8" fill="${color}" opacity="0.55" />
-         <circle cx="102" cy="254" r="5" fill="${color}" opacity="0.44" />
-         <rect x="214" y="118" width="24" height="12" rx="4" fill="${color}" opacity="0.36" />`;
-
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 280">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#10253f" />
-          <stop offset="100%" stop-color="#050b14" />
-        </linearGradient>
-      </defs>
-      <rect width="320" height="280" fill="url(#bg)" />
-      <rect x="22" y="28" width="276" height="224" rx="24" fill="#0b1827" stroke="#21486a" />
-      <path d="M24 198 C72 160, 112 170, 154 142 C208 106, 244 118, 296 84" stroke="#1f4c72" stroke-width="10" opacity="0.4" />
-      <path d="M44 90 L152 34 L278 94 L168 142 Z" fill="#0d2137" stroke="#305b84" />
-      <path d="M72 130 L152 84 L250 130 L168 176 Z" fill="#132d4b" stroke="#4686bf" opacity="0.9" />
-      <path d="M92 222 L154 186 L228 222 L166 258 Z" fill="#0f2237" stroke="#32597d" />
-      <rect x="124" y="110" width="58" height="48" rx="10" fill="#18334f" stroke="${color}" />
-      <rect x="116" y="196" width="74" height="42" rx="12" fill="#11263c" stroke="${color}" opacity="${opacity}" />
-      ${roofCracks}
-      ${debris}
-      <text x="26" y="34" fill="#dceeff" font-family="Inter, sans-serif" font-size="16" font-weight="600">${label}</text>
-      <text x="26" y="58" fill="#77b5ee" font-family="Inter, sans-serif" font-size="13">${mode === 'before' ? 'Pre-event imagery' : 'Post-event imagery'}</text>
-    </svg>
-  `;
-
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+// Future imagery source notes:
+// - Real hurricane or flood captures can be dropped into /public/mock-imagery.
+// - Good later candidates include xBD, CRASAR/UAS, or curated agency aerial imagery.
+// - Keeping stable public paths here lets the UI swap in real files without changing components or API contracts.
+const mockImageryPaths = {
+  houseBefore: '/mock-imagery/house-before.jpg',
+  houseAfterDamage: '/mock-imagery/house-after-damage.jpg',
+  satelliteDamageArea: '/mock-imagery/satellite-damage-area.jpg',
 };
 
 export const buildings: Building[] = [
@@ -125,8 +93,8 @@ export const damageAssessments: DamageAssessment[] = [
     evidenceTags: ['roof displacement', 'debris field', 'water intrusion risk'],
     summary: 'Roofline shift and exterior debris are visible. Occupancy may be possible after safety inspection.',
     estimatedDamage: '$48,000 structural estimate',
-    beforeImage: createAerialMock('SKY-204', 'before', 'moderate'),
-    afterImage: createAerialMock('SKY-204', 'after', 'moderate'),
+    beforeImage: mockImageryPaths.houseBefore,
+    afterImage: mockImageryPaths.houseAfterDamage,
   },
   {
     buildingId: 'SKY-318',
@@ -137,8 +105,8 @@ export const damageAssessments: DamageAssessment[] = [
     evidenceTags: ['shingle loss', 'tree contact'],
     summary: 'Localized roof disturbance only. Household likely eligible for quick-turn repair support.',
     estimatedDamage: '$11,500 repair estimate',
-    beforeImage: createAerialMock('SKY-318', 'before', 'minor'),
-    afterImage: createAerialMock('SKY-318', 'after', 'minor'),
+    beforeImage: mockImageryPaths.houseBefore,
+    afterImage: mockImageryPaths.houseAfterDamage,
   },
   {
     buildingId: 'SKY-411',
@@ -149,8 +117,8 @@ export const damageAssessments: DamageAssessment[] = [
     evidenceTags: ['wall collapse', 'major roof failure', 'displacement likely'],
     summary: 'Major roof collapse and wall deformation indicate the home is not currently habitable.',
     estimatedDamage: '$129,000 structural estimate',
-    beforeImage: createAerialMock('SKY-411', 'before', 'severe'),
-    afterImage: createAerialMock('SKY-411', 'after', 'severe'),
+    beforeImage: mockImageryPaths.houseBefore,
+    afterImage: mockImageryPaths.satelliteDamageArea,
   },
   {
     buildingId: 'SKY-587',
@@ -161,8 +129,8 @@ export const damageAssessments: DamageAssessment[] = [
     evidenceTags: ['clear roof', 'no debris plume'],
     summary: 'No visible exterior damage in the latest imagery. Keep household in monitoring queue only.',
     estimatedDamage: '$0 visible exterior estimate',
-    beforeImage: createAerialMock('SKY-587', 'before', 'none'),
-    afterImage: createAerialMock('SKY-587', 'after', 'none'),
+    beforeImage: mockImageryPaths.houseBefore,
+    afterImage: mockImageryPaths.houseBefore,
   },
   {
     buildingId: 'SKY-642',
@@ -173,8 +141,8 @@ export const damageAssessments: DamageAssessment[] = [
     evidenceTags: ['foundation exposure', 'complete roof loss', 'heavy debris'],
     summary: 'Structure appears destroyed. Immediate displacement and high-priority assistance are recommended.',
     estimatedDamage: '$286,000 total loss estimate',
-    beforeImage: createAerialMock('SKY-642', 'before', 'destroyed'),
-    afterImage: createAerialMock('SKY-642', 'after', 'destroyed'),
+    beforeImage: mockImageryPaths.houseBefore,
+    afterImage: mockImageryPaths.houseAfterDamage,
   },
   {
     buildingId: 'SKY-718',
@@ -185,8 +153,8 @@ export const damageAssessments: DamageAssessment[] = [
     evidenceTags: ['flood washout', 'access blocked', 'utility hazard'],
     summary: 'Flooding and access obstruction suggest prolonged displacement even if partial structure remains.',
     estimatedDamage: '$98,000 combined estimate',
-    beforeImage: createAerialMock('SKY-718', 'before', 'severe'),
-    afterImage: createAerialMock('SKY-718', 'after', 'severe'),
+    beforeImage: mockImageryPaths.houseBefore,
+    afterImage: mockImageryPaths.satelliteDamageArea,
   },
 ];
 

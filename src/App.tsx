@@ -72,7 +72,7 @@ function App() {
         <Sidebar />
 
         <main className="flex-1 px-4 py-4 sm:px-6 sm:py-6">
-          <div className="mx-auto flex max-w-[1700px] flex-col gap-5">
+          <div className="mx-auto flex max-w-[1760px] flex-col gap-5">
             <TopBar selectedBuildingId={selectedBuildingId} />
 
             {loading || !selectedAssessment || !applicationDraft || !workflow ? (
@@ -80,7 +80,7 @@ function App() {
                 <div className="text-sm text-slate-300">Syncing mock imagery, policy matches, and draft application data.</div>
               </Panel>
             ) : (
-              <div className="grid gap-5 2xl:grid-cols-[minmax(0,1.6fr)_minmax(380px,0.9fr)]">
+              <div className="grid gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(360px,0.92fr)]">
                 <div className="grid gap-5">
                   <Panel eyebrow="Damage Map" title="Disaster impact map">
                     <MapPanel

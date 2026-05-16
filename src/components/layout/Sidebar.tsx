@@ -14,7 +14,7 @@ const quickStats = [
 
 export function Sidebar() {
   return (
-    <aside className="panel-glow flex min-h-screen w-full max-w-[270px] flex-col justify-between border-r border-white/10 px-5 py-6 shadow-panel">
+    <aside className="panel-glow flex min-h-screen w-full max-w-[280px] flex-col justify-between border-r border-white/10 px-5 py-6 shadow-panel">
       <div className="space-y-8">
         <div>
           <div className="text-xs uppercase tracking-[0.35em] text-sky-200/70">SkyTriage</div>
@@ -24,7 +24,7 @@ export function Sidebar() {
           </p>
         </div>
 
-        <div className="rounded-3xl border border-sky-300/15 bg-sky-300/5 p-4">
+        <div className="rounded-3xl border border-sky-300/12 bg-sky-300/[0.05] p-4">
           <div className="text-xs uppercase tracking-[0.28em] text-sky-200/70">Mission</div>
           <div className="mt-3 text-sm leading-6 text-slate-100">
             Prioritize damaged households, surface evidence fast, and prep FEMA-ready drafts without backend dependencies.
@@ -35,7 +35,7 @@ export function Sidebar() {
           {navItems.map((item) => (
             <div
               key={item.label}
-              className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 backdrop-blur"
+              className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3"
             >
               <div className="text-xs uppercase tracking-[0.22em] text-slate-400">{item.label}</div>
               <div className="mt-2 text-sm font-medium text-slate-100">{item.value}</div>
@@ -46,7 +46,10 @@ export function Sidebar() {
         <section className="space-y-3">
           <div className="text-xs uppercase tracking-[0.28em] text-sky-200/70">Severity Mix</div>
           {quickStats.map((stat) => (
-            <div key={stat.label} className="flex items-center justify-between rounded-2xl bg-white/[0.03] px-4 py-3">
+            <div
+              key={stat.label}
+              className="flex items-center justify-between rounded-2xl border border-white/[0.06] bg-white/[0.025] px-4 py-3"
+            >
               <span className="text-sm text-slate-300">{stat.label}</span>
               <span className={`text-lg font-semibold ${stat.tone}`}>{stat.value}</span>
             </div>
