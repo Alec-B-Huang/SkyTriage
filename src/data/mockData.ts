@@ -34,7 +34,7 @@ export const buildings: Building[] = [
     neighborhood: 'Bay Crest',
     householdId: 'HH-88413',
     occupantName: 'Lena Ortiz',
-    coordinates: { x: 26, y: 44 },
+    coordinates: { x: 28, y: 56 },
   },
   {
     id: 'SKY-318',
@@ -43,7 +43,7 @@ export const buildings: Building[] = [
     neighborhood: 'Mission Ridge',
     householdId: 'HH-77201',
     occupantName: 'Marcus Hall',
-    coordinates: { x: 42, y: 30 },
+    coordinates: { x: 43, y: 35 },
   },
   {
     id: 'SKY-411',
@@ -52,7 +52,7 @@ export const buildings: Building[] = [
     neighborhood: 'Cedar Point',
     householdId: 'HH-33871',
     occupantName: 'Aisha Thompson',
-    coordinates: { x: 58, y: 52 },
+    coordinates: { x: 57, y: 57 },
   },
   {
     id: 'SKY-587',
@@ -61,7 +61,7 @@ export const buildings: Building[] = [
     neighborhood: 'Eastline',
     householdId: 'HH-12019',
     occupantName: 'Noah Kim',
-    coordinates: { x: 69, y: 28 },
+    coordinates: { x: 73, y: 39 },
   },
   {
     id: 'SKY-642',
@@ -70,7 +70,7 @@ export const buildings: Building[] = [
     neighborhood: 'Seabreak',
     householdId: 'HH-68442',
     occupantName: 'Priya Desai',
-    coordinates: { x: 76, y: 62 },
+    coordinates: { x: 53, y: 25 },
   },
   {
     id: 'SKY-718',
@@ -79,7 +79,7 @@ export const buildings: Building[] = [
     neighborhood: 'North Harbor',
     householdId: 'HH-22174',
     occupantName: 'Jonah Reed',
-    coordinates: { x: 34, y: 70 },
+    coordinates: { x: 21, y: 78 },
   },
 ];
 

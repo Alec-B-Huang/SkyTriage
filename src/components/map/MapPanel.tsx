@@ -3,6 +3,8 @@ import { buildings } from '../../data/mockData';
 import type { Building, DamageAssessment, DamageLevel } from '../../types';
 import { MapLegend } from './MapLegend';
 
+const mapBackgroundImage = '/mock-imagery/house-after-damage.jpg';
+
 const markerStyles: Record<DamageLevel, string> = {
   none: 'bg-slate-300 ring-slate-200/25',
   minor: 'bg-emerald-400 ring-emerald-300/35',
@@ -19,62 +21,9 @@ const markerBadgeStyles: Record<DamageLevel, string> = {
   destroyed: 'border-red-300/25 bg-red-400/12 text-red-100',
 };
 
-const majorRoads = [
-  { left: '3%', top: '20%', width: '61%', rotate: '-11deg' },
-  { left: '10%', top: '34%', width: '58%', rotate: '9deg' },
-  { left: '14%', top: '58%', width: '50%', rotate: '-13deg' },
-  { left: '44%', top: '10%', width: '36%', rotate: '31deg' },
-  { left: '58%', top: '52%', width: '28%', rotate: '-27deg' },
-];
-
-const secondaryRoads = [
-  { left: '5%', top: '15%', width: '46%', rotate: '20deg' },
-  { left: '18%', top: '24%', width: '40%', rotate: '-34deg' },
-  { left: '20%', top: '44%', width: '52%', rotate: '18deg' },
-  { left: '9%', top: '70%', width: '43%', rotate: '14deg' },
-  { left: '25%', top: '61%', width: '42%', rotate: '-30deg' },
-  { left: '54%', top: '18%', width: '25%', rotate: '-18deg' },
-  { left: '61%', top: '38%', width: '24%', rotate: '26deg' },
-];
-
-const parcelOutlines = Array.from({ length: 26 }, (_, index) => {
-  const column = index % 5;
-  const row = Math.floor(index / 5);
-  const left = 7 + column * 12.6 + (row % 2) * 1.2;
-  const top = 13 + row * 12.1 + (column % 2) * 0.8;
-  const width = 10.4 + (index % 3) * 1.6;
-  const height = 8 + ((index + 1) % 4) * 0.9;
-  const rotate = (index % 2 === 0 ? -1 : 1) * (((index * 3) % 5) * 0.65);
-
-  return { left, top, width, height, rotate };
-}).filter((parcel) => parcel.left + parcel.width < 79);
-
-const backdropFootprints = Array.from({ length: 94 }, (_, index) => {
-  const column = index % 11;
-  const row = Math.floor(index / 11);
-  const left = 7.5 + column * 5.8 + (row % 2) * 0.9 + ((index * 7) % 3) * 0.18;
-  const top = 13 + row * 7.1 + ((index * 11) % 4) * 0.22;
-  const width = 1.1 + (index % 4) * 0.34;
-  const height = 0.88 + ((index + 1) % 3) * 0.28;
-  const rotate = ((index * 17) % 10) - 5;
-
-  return {
-    left,
-    top,
-    width,
-    height,
-    rotate,
-    tone:
-      index % 8 === 0
-        ? 'rgba(183, 169, 131, 0.18)'
-        : index % 5 === 0
-          ? 'rgba(159, 168, 172, 0.16)'
-          : 'rgba(119, 127, 135, 0.12)',
-  };
-}).filter((footprint) => footprint.left + footprint.width < 79 && footprint.top < 90);
-
 interface MapPanelProps {
   assessments: DamageAssessment[];
+  selectedAssessment: DamageAssessment;
   selectedBuildingId: string;
   searchTerm: string;
   filter: DamageLevel | 'all';
@@ -85,6 +34,7 @@ interface MapPanelProps {
 
 export function MapPanel({
   assessments,
+  selectedAssessment,
   selectedBuildingId,
   searchTerm,
   filter,
@@ -107,7 +57,7 @@ export function MapPanel({
   }, [assessments, filter, searchTerm]);
 
   const selectedBuilding = buildings.find((item) => item.id === selectedBuildingId) ?? buildings[0];
-  const selectedAssessment = assessments.find((item) => item.buildingId === selectedBuilding.id) ?? assessments[0];
+
   return (
     <div className="space-y-3">
       <div className="space-y-2.5">
@@ -166,69 +116,13 @@ export function MapPanel({
 
       <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-[#07111b]">
         <div className="map-surface relative h-[480px]">
-          <div className="map-waterway absolute inset-y-[-5%] right-[11%] w-[14%] rotate-[7deg] rounded-[42%]" />
-
-          <div className="absolute inset-0">
-            {majorRoads.map((road) => (
-              <div
-                key={`${road.left}-${road.top}-${road.rotate}`}
-                className="absolute h-[2px] rounded-full bg-white/[0.22] shadow-[0_0_16px_rgba(255,255,255,0.04)]"
-                style={{
-                  left: road.left,
-                  top: road.top,
-                  width: road.width,
-                  transform: `rotate(${road.rotate})`,
-                  transformOrigin: 'left center',
-                }}
-              />
-            ))}
-            {secondaryRoads.map((road) => (
-              <div
-                key={`${road.left}-${road.top}-${road.rotate}`}
-                className="absolute h-px rounded-full bg-white/12"
-                style={{
-                  left: road.left,
-                  top: road.top,
-                  width: road.width,
-                  transform: `rotate(${road.rotate})`,
-                  transformOrigin: 'left center',
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="absolute inset-0 opacity-80">
-            {parcelOutlines.map((parcel, index) => (
-              <div
-                key={`${parcel.left}-${parcel.top}-${index}`}
-                className="absolute rounded-sm border border-white/[0.06]"
-                style={{
-                  left: `${parcel.left}%`,
-                  top: `${parcel.top}%`,
-                  width: `${parcel.width}%`,
-                  height: `${parcel.height}%`,
-                  transform: `rotate(${parcel.rotate}deg)`,
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="absolute inset-0 opacity-90">
-            {backdropFootprints.map((footprint, index) => (
-              <div
-                key={`${footprint.left}-${footprint.top}-${index}`}
-                className="absolute rounded-[2px] border border-white/[0.05]"
-                style={{
-                  left: `${footprint.left}%`,
-                  top: `${footprint.top}%`,
-                  width: `${footprint.width}%`,
-                  height: `${footprint.height}%`,
-                  transform: `rotate(${footprint.rotate}deg)`,
-                  backgroundColor: footprint.tone,
-                }}
-              />
-            ))}
-          </div>
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${mapBackgroundImage})` }}
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,10,18,0.34),rgba(5,10,18,0.58))]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(138,169,204,0.12),transparent_30%),radial-gradient(circle_at_84%_72%,rgba(19,37,58,0.34),transparent_36%),linear-gradient(180deg,rgba(7,14,24,0.12),rgba(7,14,24,0.42))]" />
+          <div className="absolute inset-0 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03),inset_0_-90px_120px_rgba(3,7,13,0.52)]" />
 
           <div className="absolute left-5 right-5 top-5 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
             <div className="rounded-[22px] border border-white/8 bg-slate-950/78 px-4 py-3">

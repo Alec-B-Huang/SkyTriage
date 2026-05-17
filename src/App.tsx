@@ -102,12 +102,18 @@ function App() {
     void refreshSelection();
   }, [assessments, selectedBuildingId]);
 
-  const selectedAssessment = useMemo(
+  const effectiveAssessments = useMemo(
     () =>
-      assessmentOverrides[selectedBuildingId] ??
-      assessments.find((item) => item.buildingId === selectedBuildingId) ??
-      assessments[0],
-    [assessmentOverrides, assessments, selectedBuildingId],
+      assessments.map((item) => ({
+        ...item,
+        ...(assessmentOverrides[item.buildingId] ?? {}),
+      })),
+    [assessmentOverrides, assessments],
+  );
+
+  const selectedAssessment = useMemo(
+    () => effectiveAssessments.find((item) => item.buildingId === selectedBuildingId) ?? effectiveAssessments[0],
+    [effectiveAssessments, selectedBuildingId],
   );
 
   const handleRunAssessment = async (file: File) => {
@@ -166,7 +172,8 @@ function App() {
                 <div className="grid gap-5">
                   <Panel eyebrow="Damage Map" title="Disaster impact map">
                     <MapPanel
-                      assessments={assessments}
+                      assessments={effectiveAssessments}
+                      selectedAssessment={selectedAssessment}
                       selectedBuildingId={selectedBuildingId}
                       searchTerm={searchTerm}
                       filter={filter}
