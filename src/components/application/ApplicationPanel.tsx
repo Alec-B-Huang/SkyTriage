@@ -18,6 +18,20 @@ export function ApplicationPanel({ draft, matchingStatus }: ApplicationPanelProp
   const [activeTab, setActiveTab] = useState<TabKey>('Summary');
   const building = buildings.find((item) => item.id === draft.buildingId) ?? buildings[0];
 
+  const handleDownloadDraft = () => {
+    const content = buildDraftExport(draft, building);
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = objectUrl;
+    link.download = `skytriage-disaster-assistance-${draft.buildingId}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(objectUrl);
+  };
+
   return (
     <Panel
       eyebrow="Assistance Draft"
@@ -29,9 +43,10 @@ export function ApplicationPanel({ draft, matchingStatus }: ApplicationPanelProp
           </div>
           <button
             type="button"
+            onClick={handleDownloadDraft}
             className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-slate-100"
           >
-            Download PDF
+            Download Draft
           </button>
           <button
             type="button"
@@ -179,4 +194,63 @@ function Card({ label, value, detail }: { label: string; value: string; detail: 
       <div className="mt-2 text-sm leading-6 text-slate-400">{detail}</div>
     </div>
   );
+}
+
+function buildDraftExport(draft: ApplicationDraft, building: (typeof buildings)[number]) {
+  return [
+    'SKYTRIAGE DISASTER ASSISTANCE DRAFT',
+    '',
+    'Applicant',
+    '--------------------',
+    `Name: ${draft.applicant.name}`,
+    `Phone: ${draft.applicant.phone}`,
+    `Email: ${draft.applicant.email}`,
+    '',
+    'Address',
+    '--------------------',
+    `Street: ${draft.address.street}`,
+    `City/State/ZIP: ${draft.address.city}, ${draft.address.state} ${draft.address.zip}`,
+    '',
+    'Estimated Damage',
+    '--------------------',
+    `Estimated Damage: ${draft.estimatedDamage}`,
+    `Parcel ID: ${building.id}`,
+    '',
+    'Household',
+    '--------------------',
+    `Household ID: ${building.householdId}`,
+    `Neighborhood / Occupant record: ${building.neighborhood} / ${building.occupantName}`,
+    '',
+    'Application Summary',
+    '--------------------',
+    draft.summary,
+    '',
+    'Draft Context',
+    '--------------------',
+    `Estimated Damage: ${draft.estimatedDamage}`,
+    'Disaster: San Aurelio coastal hurricane event',
+    'Orchestration: Bedrock-assisted drafting trace',
+    `Parcel ID: ${building.id}`,
+    '',
+    'Aid Programs',
+    '--------------------',
+    ...draft.aidPrograms.flatMap((program) => [
+      `- ${program.name}`,
+      `  Fit: ${program.fit}`,
+      `  Policy citation: ${program.policyCitation}`,
+    ]),
+    '',
+    'Documents',
+    '--------------------',
+    ...draft.documents.map((document) => `- ${document}`),
+    '',
+    'Missing Info',
+    '--------------------',
+    ...draft.missingInfo.map((item) => `- ${item}`),
+    '',
+    'Policy Citations',
+    '--------------------',
+    ...draft.citations.map((citation) => `- ${citation}`),
+    '',
+  ].join('\n');
 }
