@@ -2,8 +2,8 @@ const legend = [
   { label: 'No visible damage', color: 'bg-slate-400' },
   { label: 'Minor', color: 'bg-emerald-400' },
   { label: 'Moderate', color: 'bg-yellow-400' },
-  { label: 'Major / severe', color: 'bg-orange-400' },
-  { label: 'Destroyed / high', color: 'bg-red-400' },
+  { label: 'Major', color: 'bg-orange-400' },
+  { label: 'Destroyed', color: 'bg-red-400' },
 ];
 
 export function MapLegend() {

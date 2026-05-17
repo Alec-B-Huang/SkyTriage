@@ -108,12 +108,18 @@ export function MapPanel({
 
   const selectedBuilding = buildings.find((item) => item.id === selectedBuildingId) ?? buildings[0];
   const selectedAssessment = assessments.find((item) => item.buildingId === selectedBuilding.id) ?? assessments[0];
-
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-        <MapLegend />
-        <div className="flex flex-col gap-3 sm:flex-row">
+    <div className="space-y-3">
+      <div className="space-y-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <MapLegend />
+          <div className="inline-flex items-center gap-2 rounded-full border border-sky-300/14 bg-sky-300/8 px-4 py-2 text-sm text-sky-100">
+            <span className="text-base font-semibold text-white">{filteredBuildings.length}</span>
+            <span className="text-slate-300">visible markers</span>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <label className="flex min-w-[240px] items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-300">
             <span className="text-slate-500">Search</span>
             <input
@@ -139,10 +145,27 @@ export function MapPanel({
             </select>
           </label>
         </div>
+
+        <div className="grid gap-2 rounded-[18px] border border-white/12 bg-slate-950/84 px-3 py-2.5 shadow-[0_14px_30px_rgba(1,4,10,0.18)] backdrop-blur-sm md:grid-cols-[auto_auto_minmax(0,1fr)_auto_auto] md:items-center">
+          <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">Selected Marker</div>
+          <div className="text-sm font-semibold text-white">{selectedBuilding.id}</div>
+          <div className="min-w-0 truncate text-sm text-slate-300">{selectedBuilding.address}</div>
+          <div
+            className={`justify-self-start rounded-full border px-2.5 py-1 text-xs font-medium ${markerBadgeStyles[selectedAssessment.damageClass]}`}
+          >
+            {selectedAssessment.damageLabel}
+          </div>
+          <div className="grid grid-cols-[auto_auto] items-baseline gap-x-2 gap-y-0.5 justify-self-start md:justify-self-end">
+            <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Confidence</div>
+            <div className="text-sm font-semibold text-slate-100">{selectedAssessment.confidence.toFixed(2)}</div>
+            <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Assessed</div>
+            <div className="text-sm font-semibold text-slate-100">{formatShortTime(selectedAssessment.assessedAt)}</div>
+          </div>
+        </div>
       </div>
 
       <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-[#07111b]">
-        <div className="map-surface relative h-[520px]">
+        <div className="map-surface relative h-[480px]">
           <div className="map-waterway absolute inset-y-[-5%] right-[11%] w-[14%] rotate-[7deg] rounded-[42%]" />
 
           <div className="absolute inset-0">
@@ -253,58 +276,37 @@ export function MapPanel({
               );
             })}
           </div>
+        </div>
+      </div>
 
-          {selectedAssessment ? (
-            <div
-              className="pointer-events-none absolute z-30 hidden w-[220px] -translate-y-1/2 rounded-[24px] border border-white/10 bg-slate-950/86 p-4 shadow-[0_24px_60px_rgba(2,6,14,0.45)] md:block"
-              style={{
-                left: `calc(${selectedBuilding.coordinates.x}% + 22px)`,
-                top: `calc(${selectedBuilding.coordinates.y}% - 12px)`,
-              }}
-            >
-              <div className="text-sm font-semibold text-white">{selectedBuilding.id}</div>
-              <div className="mt-1 text-xs text-slate-400">{selectedBuilding.address}</div>
-              <div
-                className={`mt-3 inline-flex rounded-full border px-3 py-1 text-xs font-medium ${markerBadgeStyles[selectedAssessment.damageClass]}`}
-              >
-                {selectedAssessment.damageLabel}
-              </div>
-              <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">Confidence</div>
-                  <div className="mt-1 font-medium text-slate-100">{selectedAssessment.confidence.toFixed(2)}</div>
-                </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">Assessed</div>
-                  <div className="mt-1 font-medium text-slate-100">{formatShortTime(selectedAssessment.assessedAt)}</div>
-                </div>
+      <div className="grid gap-2.5 md:grid-cols-[minmax(0,1.15fr)_minmax(240px,0.85fr)]">
+        <div className="min-w-0 rounded-[24px] border border-white/14 bg-slate-950/92 p-3.5 shadow-[0_18px_36px_rgba(1,4,10,0.32)] backdrop-blur-sm">
+          <div className="text-xs uppercase tracking-[0.22em] text-sky-200/70">Selected Building</div>
+          <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,220px)_minmax(0,1fr)] lg:items-end">
+            <div className="min-w-0">
+              <div className="text-lg font-semibold text-white">{selectedBuilding.id}</div>
+              <div className="mt-1 text-sm text-slate-300">{selectedBuilding.address}</div>
+              <div className="mt-1 text-xs text-slate-500">
+                {selectedBuilding.neighborhood} • Household {selectedBuilding.householdId}
               </div>
             </div>
-          ) : null}
-
-          <div className="absolute bottom-5 left-5 right-5 grid gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
-            <div className="rounded-[24px] border border-white/10 bg-slate-950/78 p-4">
-              <div className="text-xs uppercase tracking-[0.22em] text-sky-200/70">Selected Building</div>
-              <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,220px)_minmax(0,1fr)] lg:items-end">
-                <div className="min-w-0">
-                  <div className="text-lg font-semibold text-white">{selectedBuilding.id}</div>
-                  <div className="mt-1 text-sm text-slate-300">{selectedBuilding.address}</div>
-                  <div className="mt-1 text-xs text-slate-500">
-                    {selectedBuilding.neighborhood} • Household {selectedBuilding.householdId}
-                  </div>
-                </div>
-                <div className="min-w-0 text-sm leading-6 text-slate-300">
-                  Parcel selection stays lightweight today, but the same data contract can back future Bedrock and AWS
-                  service calls later.
-                </div>
-              </div>
+            <div className="min-w-0 text-sm leading-6 text-slate-300">
+              Parcel context stays linked to the selected marker so imagery, assessment, and draft details stay in sync
+              as we swap parcels.
             </div>
+          </div>
+        </div>
 
-            <div className="rounded-[24px] border border-white/10 bg-black/30 p-4">
-              <div className="text-xs uppercase tracking-[0.22em] text-slate-500">Visible Markers</div>
-              <div className="mt-2 text-3xl font-semibold text-white">{filteredBuildings.length}</div>
-              <div className="mt-2 text-sm text-slate-400">Filtered by search and damage class</div>
-            </div>
+        <div className="min-w-0 rounded-[24px] border border-white/12 bg-slate-950/84 p-3.5 shadow-[0_18px_36px_rgba(1,4,10,0.24)] backdrop-blur-sm">
+          <div className="text-xs uppercase tracking-[0.22em] text-slate-500">Assessment Details</div>
+          <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
+            <AssessmentStat label="Damage Class" value={selectedAssessment.damageLabel} />
+            <AssessmentStat label="Confidence" value={selectedAssessment.confidence.toFixed(2)} />
+            <AssessmentStat label="Assessed" value={formatShortTime(selectedAssessment.assessedAt)} />
+          </div>
+          <div className="mt-3 text-sm leading-6 text-slate-300">
+            {selectedAssessment.summary} Future Bedrock or API-backed calls can continue to plug into this same selected
+            parcel workflow.
           </div>
         </div>
       </div>
@@ -317,4 +319,13 @@ function formatShortTime(value: string) {
     hour: 'numeric',
     minute: '2-digit',
   }).format(new Date(value));
+}
+
+function AssessmentStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex min-h-[116px] flex-col rounded-2xl border border-white/8 bg-white/[0.03] p-3">
+      <div className="min-h-[34px] text-[11px] uppercase tracking-[0.18em] text-slate-500">{label}</div>
+      <div className="mt-3 flex min-h-[44px] items-start text-sm font-semibold leading-8 text-slate-100">{value}</div>
+    </div>
+  );
 }
