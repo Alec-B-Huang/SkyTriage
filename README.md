@@ -6,6 +6,9 @@ Built for the AWS Bedrock Hackathon.
 
 ---
 
+## Demo Video
+https://www.loom.com/share/2c6bd12b12544326ba6142dd7f2e611d
+
 ## Overview
 
 SkyTriage is a disaster-response command center designed to help responders and survivors rapidly assess property damage and generate FEMA-ready assistance drafts using:
