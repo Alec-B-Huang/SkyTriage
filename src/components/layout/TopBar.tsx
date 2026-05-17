@@ -1,8 +1,18 @@
+import type { BackendStatus } from '../../lib/api';
+
 interface TopBarProps {
   selectedBuildingId: string;
+  backendStatus: BackendStatus;
 }
 
-export function TopBar({ selectedBuildingId }: TopBarProps) {
+export function TopBar({ selectedBuildingId, backendStatus }: TopBarProps) {
+  const backendLabel =
+    backendStatus.mode === 'live'
+      ? 'Live backend connected'
+      : backendStatus.message.includes('damage assessment')
+        ? 'Fallback inference active'
+        : 'Mock aid matching fallback';
+
   return (
     <header className="rounded-[28px] border border-white/8 bg-[linear-gradient(180deg,rgba(10,18,30,0.96),rgba(7,13,22,0.98))] px-5 py-4 shadow-[0_16px_40px_rgba(1,4,10,0.28)]">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -14,10 +24,22 @@ export function TopBar({ selectedBuildingId }: TopBarProps) {
             <span className="text-sm font-medium text-white">Coastal hurricane response</span>
             <span className="text-sm text-slate-400">Selected parcel {selectedBuildingId}</span>
           </div>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span
+              className={`rounded-full border px-3 py-1 text-xs font-medium ${
+                backendStatus.mode === 'live'
+                  ? 'border-emerald-300/20 bg-emerald-400/10 text-emerald-100'
+                  : 'border-amber-300/20 bg-amber-400/10 text-amber-100'
+              }`}
+            >
+              {backendLabel}
+            </span>
+            <span className="text-xs text-slate-400">{backendStatus.message}</span>
+          </div>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight text-white">Hurricane response triage board</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
-            Imagery review, ML damage assessment, Bedrock workflow trace, and draft assistance output stay synchronized for
-            the active parcel without relying on live backend services yet.
+            Imagery review, ML damage assessment, Bedrock orchestration trace, and disaster assistance drafting stay
+            synchronized for the active parcel while mock fallbacks keep the demo stable.
           </p>
         </div>
 

@@ -8,16 +8,20 @@ type TabKey = (typeof tabs)[number];
 
 interface ApplicationPanelProps {
   draft: ApplicationDraft;
+  matchingStatus: {
+    tone: 'live' | 'fallback' | 'idle';
+    message: string;
+  };
 }
 
-export function ApplicationPanel({ draft }: ApplicationPanelProps) {
+export function ApplicationPanel({ draft, matchingStatus }: ApplicationPanelProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('Summary');
   const building = buildings.find((item) => item.id === draft.buildingId) ?? buildings[0];
 
   return (
     <Panel
-      eyebrow="FEMA Draft"
-      title="Application output"
+      eyebrow="Assistance Draft"
+      title="Disaster assistance output"
       action={
         <div className="flex flex-wrap gap-2">
           <div className="rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-medium text-emerald-100">
@@ -40,6 +44,18 @@ export function ApplicationPanel({ draft }: ApplicationPanelProps) {
       className="h-full"
     >
       <div className="space-y-5">
+        <div
+          className={`rounded-[18px] border px-4 py-3 text-xs leading-5 ${
+            matchingStatus.tone === 'live'
+              ? 'border-emerald-300/18 bg-emerald-400/8 text-emerald-100'
+              : matchingStatus.tone === 'fallback'
+                ? 'border-amber-300/18 bg-amber-400/8 text-amber-100'
+                : 'border-white/8 bg-black/20 text-slate-300'
+          }`}
+        >
+          {matchingStatus.message}
+        </div>
+
         <div className="grid gap-3 xl:grid-cols-2">
           <Card label="Applicant" value={draft.applicant.name} detail={`${draft.applicant.phone} • ${draft.applicant.email}`} />
           <Card label="Address" value={draft.address.street} detail={`${draft.address.city}, ${draft.address.state} ${draft.address.zip}`} />
@@ -84,6 +100,10 @@ export function ApplicationPanel({ draft }: ApplicationPanelProps) {
                   <div>
                     <div className="text-slate-500">Disaster</div>
                     <div className="mt-1 font-medium text-slate-100">San Aurelio coastal hurricane event</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-500">Orchestration</div>
+                    <div className="mt-1 font-medium text-slate-100">Bedrock-assisted drafting trace</div>
                   </div>
                   <div>
                     <div className="text-slate-500">Parcel ID</div>

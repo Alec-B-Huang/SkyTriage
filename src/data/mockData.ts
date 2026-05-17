@@ -118,7 +118,7 @@ export const damageAssessments: DamageAssessment[] = [
     summary: 'Major roof collapse and wall deformation indicate the home is not currently habitable.',
     estimatedDamage: '$129,000 structural estimate',
     beforeImage: mockImageryPaths.houseBefore,
-    afterImage: mockImageryPaths.satelliteDamageArea,
+    afterImage: mockImageryPaths.houseAfterDamage,
   },
   {
     buildingId: 'SKY-587',
@@ -154,7 +154,7 @@ export const damageAssessments: DamageAssessment[] = [
     summary: 'Flooding and access obstruction suggest prolonged displacement even if partial structure remains.',
     estimatedDamage: '$98,000 combined estimate',
     beforeImage: mockImageryPaths.houseBefore,
-    afterImage: mockImageryPaths.satelliteDamageArea,
+    afterImage: mockImageryPaths.houseAfterDamage,
   },
 ];
 

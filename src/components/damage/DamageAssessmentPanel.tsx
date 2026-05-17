@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { buildings } from '../../data/mockData';
 import type { DamageLevel, DamageAssessment } from '../../types';
 import { ImageWithFallback } from '../ui/ImageWithFallback';
@@ -13,18 +14,49 @@ const damageTone: Record<DamageLevel, string> = {
 
 interface DamageAssessmentPanelProps {
   assessment: DamageAssessment;
+  isAssessing?: boolean;
+  onRunAssessment: (file: File) => void | Promise<void>;
+  status: {
+    tone: 'live' | 'fallback' | 'idle';
+    message: string;
+  };
 }
 
-export function DamageAssessmentPanel({ assessment }: DamageAssessmentPanelProps) {
+export function DamageAssessmentPanel({ assessment, isAssessing = false, onRunAssessment, status }: DamageAssessmentPanelProps) {
   const building = buildings.find((item) => item.id === assessment.buildingId) ?? buildings[0];
+  const uploadInputId = `assessment-upload-${assessment.buildingId}`;
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+
+    if (!file) return;
+    void onRunAssessment(file);
+  };
 
   return (
     <Panel
       eyebrow="Vision Assessment"
       title="Damage assessment"
       action={
-        <div className="rounded-full border border-sky-300/15 bg-sky-300/8 px-3 py-1.5 text-xs uppercase tracking-[0.22em] text-sky-100">
-          ML classification
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <label
+            htmlFor={uploadInputId}
+            className="cursor-pointer rounded-full border border-sky-300/20 bg-sky-400/10 px-3 py-1.5 text-xs font-medium text-sky-100 transition hover:border-sky-200/30 hover:bg-sky-400/16"
+          >
+            {isAssessing ? 'Running ML assessment...' : 'Run ML assessment'}
+          </label>
+          <input
+            id={uploadInputId}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            disabled={isAssessing}
+            onChange={handleFileChange}
+          />
+          <div className="rounded-full border border-sky-300/15 bg-sky-300/8 px-3 py-1.5 text-xs uppercase tracking-[0.22em] text-sky-100">
+            ML classification
+          </div>
         </div>
       }
       className="h-full"
@@ -40,6 +72,21 @@ export function DamageAssessmentPanel({ assessment }: DamageAssessmentPanelProps
                 </div>
                 <div className="mt-1 text-sm text-slate-400">
                   {building.neighborhood} neighborhood • Household {building.householdId}
+                </div>
+                <div className="mt-3 text-xs text-slate-400">
+                  Upload after-event imagery to run the existing <span className="font-medium text-slate-200">/assess</span>{' '}
+                  endpoint and refresh the model result in place.
+                </div>
+                <div
+                  className={`mt-3 rounded-2xl border px-3 py-2 text-xs leading-5 ${
+                    status.tone === 'live'
+                      ? 'border-emerald-300/18 bg-emerald-400/8 text-emerald-100'
+                      : status.tone === 'fallback'
+                        ? 'border-amber-300/18 bg-amber-400/8 text-amber-100'
+                        : 'border-white/8 bg-black/20 text-slate-300'
+                  }`}
+                >
+                  {status.message}
                 </div>
               </div>
               <div className="rounded-full border border-white/8 bg-black/20 px-3 py-1.5 text-xs text-slate-300">

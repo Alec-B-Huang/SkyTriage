@@ -8,8 +8,8 @@ interface AgentTracePanelProps {
 export function AgentTracePanel({ workflow }: AgentTracePanelProps) {
   return (
     <Panel
-      eyebrow="Bedrock Workflow"
-      title="Agent trace"
+      eyebrow="Bedrock Orchestration"
+      title="Agent workflow trace"
       action={
         <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-slate-200">
           {workflow.steps.filter((step) => step.status === 'complete').length}/{workflow.steps.length} steps synced
@@ -19,8 +19,8 @@ export function AgentTracePanel({ workflow }: AgentTracePanelProps) {
     >
       <div className="space-y-4">
         <div className="rounded-[22px] border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-slate-300">
-          Trace events stay visually prominent here, but the panel remains presentation-only until live Bedrock workflow
-          events replace the mock API response.
+          Bedrock orchestration handoffs stay readable here, while the demo continues to fall back to mock workflow events
+          until live trace streaming is wired in.
         </div>
 
         <div className="space-y-3">
